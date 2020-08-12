@@ -5,7 +5,7 @@ export default function Ticket({ requestsManager, id }) {
   const [password, setPassword] = useState("");
 
   const handleConnect = () => {
-    console.log("Entered password is", password);
+    requestsManager.setPassword(password);
   };
 
   return (
