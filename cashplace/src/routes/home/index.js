@@ -1,17 +1,27 @@
 import style from "./style";
 import { Component } from "preact";
+import { route } from "preact-router";
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       hasCode: false,
+      creating: false,
     };
   }
 
-  createTicket = (btcSpender) => {
-    if (btcSpender) console.log("spender");
-    else console.log("receiver");
+  createTicket = () => {
+    this.setState({ creating: true });
+    this.props.requestsManager
+      .createTicket("btc")
+      .then((response) => response.json())
+      .then((response) => {
+        if ("id" in response) {
+          route(response["id"], true);
+        } else if ("error" in response) console.log(response["error"]);
+        else console.log("error");
+      });
   };
 
   toggleCode = () => {
@@ -22,6 +32,12 @@ export default class Home extends Component {
 
   displayCodeField = () => {
     if (this.state.hasCode) return <input type="text" placeholder="code" />;
+  };
+
+  displayCreateButton = () => {
+    if (!this.state.creating)
+      return <button onClick={() => this.createTicket()}>create</button>;
+    else return <div>creating ticket...</div>;
   };
 
   render() {
@@ -39,17 +55,8 @@ export default class Home extends Component {
             />
             Use a code?
           </label>
-        </div>
-        {this.displayCodeField()}
-        <div>
-          <button onClick={() => this.createTicket(true)}>Spend BTC</button>
-          You want to send BTC to someone and make sure to get what you paid
-          for.
-        </div>
-        <div>
-          <button onClick={() => this.createTicket(false)}>Receive BTC</button>
-          You want to receive BTC from someone and make sure to receive your
-          money.
+          {this.displayCodeField()}
+          {this.displayCreateButton()}
         </div>
       </div>
     );

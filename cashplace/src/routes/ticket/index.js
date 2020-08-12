@@ -1,20 +1,34 @@
-import { h, Component } from "preact";
+import { useState } from 'preact/hooks';
+import useParams from "preact-router";
 import style from "./style";
 
-export default class Ticket extends Component {
-  state = {};
+export default function Ticket({ requestsManager }) {
+  const { id } = useParams();
+  const [password, setPassword] = useState("");
 
-  // Note: `user` comes from the URL, courtesy of our router
-  render({ id }) {
-    return (
-      <div class={style.ticket}>
-        <h1>Blockchain address: {id}</h1>
+  const handleConnect = () => {
+    console.log("Entered password is", password);
+  };
 
-        <input type="password" placeholder="password"></input>
-
-        <button onClick={() => {}}>connect as spender</button>
-        <button onClick={() => {}}>connect as receiver</button>
+  return (
+    <div class={style.ticket}>
+      <h1>Blockchain address: {id}</h1>
+      <input
+        type="password"
+        placeholder="password"
+        onChange={(e) => setPassword(e.target.value)}
+      ></input>
+      <div>
+        <button onClick={() => handleConnect(true)}>connect as spender</button>
+        You want to send BTC to someone and make sure to get what you paid for.
       </div>
-    );
-  }
+      <div>
+        <button onClick={() => handleConnect(false)}>
+          connect as receiver
+        </button>
+        You want to receive BTC from someone and make sure to receive your
+        money.
+      </div>
+    </div>
+  );
 }
