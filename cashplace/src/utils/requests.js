@@ -11,6 +11,10 @@ export default class RequestsManager {
     return this.sendRequest(`/new/${coin}`, {}, "GET");
   }
 
+  fetchTicketInfos(id, spender) {
+    return this.sendRequest(`/ticket/${id}/infos`, { spender: spender }, "GET");
+  }
+
   sendRequest(route, parameters, method) {
     let formBody = [];
     for (const property in parameters) {
