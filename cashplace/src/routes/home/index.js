@@ -1,7 +1,6 @@
 import style from "./style";
 import { route } from "preact-router";
 import { useState } from "preact/hooks";
-import { Button } from 'preact-fluid';
 
 
 export default function Home({ requestsManager }) {
@@ -27,7 +26,7 @@ export default function Home({ requestsManager }) {
 
   const displayCreateButton = () => {
     if (!isCreating)
-      return <Button onClick={() => createTicket()}>create</Button>;
+      return <button onClick={() => createTicket()}>create</button>;
     else return <div>creating ticket...</div>;
   };
 
