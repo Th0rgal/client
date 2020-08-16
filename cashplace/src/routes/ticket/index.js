@@ -66,7 +66,7 @@ export default function Ticket({ requestsManager, id }) {
     if (!infos) {
       return ticketLogin();
     } else {
-      if (isSpender) return <SpenderPanel />;
+      if (isSpender) return <SpenderPanel id={id} infos={infos} />;
     }
   };
 
