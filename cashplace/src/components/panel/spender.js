@@ -10,16 +10,18 @@ export default function SpenderPanel({ id, infos }) {
 
   const getMasterConfigurationPanel = () => {
     if (infos["master"]) {
-      <Fragment>
-        <div>
-          <h3>Amount</h3>
-          You created this ticket, as a ticket master you have to configure the
-          amount you want to send:
-          <label>Amount in BTC</label>
-          <input type="number" placeholder="0.01" />
-          <button onClick={null}>Set amount</button>
-        </div>
-      </Fragment>;
+      return (
+        <Fragment>
+          <div>
+            <h3>Amount</h3>
+            You created this ticket, as a ticket master you have to configure
+            the amount you want to send:
+            <label>Amount in BTC</label>
+            <input type="number" placeholder="0.01" />
+            <button onClick={null}>Set amount</button>
+          </div>
+        </Fragment>
+      );
     }
   };
 
@@ -137,11 +139,30 @@ export default function SpenderPanel({ id, infos }) {
     }
   };
 
+  const getAmount = () => {
+    const amount = infos["amount"];
+    return amount ? amount : "you didn't set it";
+  };
+
+  const getLeftOverAddress = () => {
+    if (!("leftover" in infos)) return "you didn't set it";
+    return infos["leftover"];
+  };
+
+  const getReceiverAddress = () => {
+    if (!("receiver" in infos)) return "the receiver didn't set it";
+    return infos["receiver"];
+  };
+
   return (
     <div class={style.panel}>
       <h1>Spender Panel</h1>
-      BTC address: {id}
-      Amount to send: {infos["amount"]}
+      <ul>
+        <li>BTC address: {id}</li>
+        <li>Amount to send: {getAmount()}</li>
+        <li>Leftover Address: {getLeftOverAddress()}</li>
+        <li>Receiver Address: {getReceiverAddress()}</li>
+      </ul>
       {showStatusBox(infos["status"])}
       {showMasterBox()}
     </div>
