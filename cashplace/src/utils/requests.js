@@ -15,6 +15,54 @@ export default class RequestsManager {
     return this.sendRequest(`/ticket/${id}/infos`, { spender: spender }, "GET");
   }
 
+  setAmount(id, spender, amount) {
+    return this.sendRequest(
+      `/ticket/${id}/setamount`,
+      { spender: spender, amount: amount },
+      "POST"
+    );
+  }
+
+  setLeftover(id, spender, address) {
+    return this.sendRequest(
+      `/ticket/${id}/setleftover`,
+      { spender: spender, address: address },
+      "POST"
+    );
+  }
+
+  setReceiver(id, spender, address) {
+    return this.sendRequest(
+      `/ticket/${id}/setreceiver`,
+      { spender: spender, address: address },
+      "POST"
+    );
+  }
+
+  askPayment(id, spender) {
+    return this.sendRequest(
+      `/ticket/${id}/askpayment`,
+      { spender: spender },
+      "POST"
+    );
+  }
+
+  getBalance(id, spender) {
+    return this.sendRequest(
+      `/ticket/${id}/balance`,
+      { spender: spender },
+      "GET"
+    );
+  }
+
+  confirmReception(id, spender, fast) {
+    return this.sendRequest(
+      `/ticket/${id}/balance`,
+      { spender: spender, fast: fast },
+      "GET"
+    );
+  }
+
   sendRequest(route, parameters, method) {
     let formBody = [];
     for (const property in parameters) {
