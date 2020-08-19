@@ -48,7 +48,7 @@ export default function ReceiverPanel({
   const setAmount = (amount) => {
     amount = Math.floor(parseFloat(amount) * 10 ** 9);
     requestsManager
-      .setAmount(id, true, amount)
+      .setAmount(id, false, amount)
       .then((response) => response.json())
       .then((response) => {
         if ("error" in response) console.log(response["error"]);
@@ -76,6 +76,16 @@ export default function ReceiverPanel({
     return infos["leftover"];
   }
 
+  function askPayment() {
+    requestsManager
+      .askPayment(id, false)
+      .then((response) => response.json())
+      .then((response) => {
+        if ("error" in response) console.log(response["error"]);
+        else setInfos(response);
+      });
+  }
+
   function handleStatus(status) {
     switch (status) {
       case 0:
@@ -86,6 +96,7 @@ export default function ReceiverPanel({
             setLocalAmount={setLocalAmount}
             setAmount={setAmount}
             additionalPanel={getReceiverOption()}
+            askPayment={askPayment}
           />
         );
 
@@ -112,7 +123,8 @@ export default function ReceiverPanel({
       <ul>
         <li>BTC address: {id}</li>
         <li>
-          Amount to receive: {getAmount() / 10 ** 9} BTC or {getAmount()} satoshis
+          Amount to receive: {getAmount() / 10 ** 9} BTC or {getAmount()}{" "}
+          satoshis
         </li>
         <li>
           Leftover Address: {getLeftoverAddress("the spender didn't set it")}

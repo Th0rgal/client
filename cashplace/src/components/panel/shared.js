@@ -4,6 +4,7 @@ export function SharedConfig({
   setLocalAmount,
   setAmount,
   additionalPanel,
+  askPayment,
 }) {
   return (
     <div>
@@ -24,8 +25,7 @@ export function SharedConfig({
         </div>
       )}
       {additionalPanel}
-
-      <button onClick={null}>Send payment</button>
+      <button onClick={askPayment}>Send payment</button>
     </div>
   );
 }

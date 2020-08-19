@@ -72,6 +72,16 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
     return infos["receiver"];
   }
 
+  function askPayment() {
+    requestsManager
+      .askPayment(id, true)
+      .then((response) => response.json())
+      .then((response) => {
+        if ("error" in response) console.log(response["error"]);
+        else setInfos(response);
+      });
+  }
+
   function handleStatus(status) {
     switch (status) {
       case 0:
@@ -82,6 +92,7 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
             setLocalAmount={setLocalAmount}
             setAmount={setAmount}
             additionalPanel={getLeftoverOption()}
+            askPayment={askPayment}
           />
         );
 
