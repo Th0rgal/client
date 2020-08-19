@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import style from "./style";
 import SpenderPanel from "../../components/panel/spender";
+import ReceiverPanel from "../../components/panel/receiver";
 import { Fragment } from "preact";
 
 export default function Ticket({ requestsManager, id }) {
@@ -66,7 +67,24 @@ export default function Ticket({ requestsManager, id }) {
     if (!infos) {
       return ticketLogin();
     } else {
-      if (isSpender) return <SpenderPanel requestsManager={requestsManager} id={id} infos={infos} setInfos={setInfos} />;
+      if (isSpender)
+        return (
+          <SpenderPanel
+            requestsManager={requestsManager}
+            id={id}
+            infos={infos}
+            setInfos={setInfos}
+          />
+        );
+      else
+        return (
+          <ReceiverPanel
+            requestsManager={requestsManager}
+            id={id}
+            infos={infos}
+            setInfos={setInfos}
+          />
+        );
     }
   };
 

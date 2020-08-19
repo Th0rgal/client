@@ -1,27 +1,28 @@
 export function SharedConfig({
-  setLeftoverAddress,
-  setLocalLeftoverAddress,
-  localLeftoverAddress,
+  master,
+  localAmount,
+  setLocalAmount,
+  setAmount,
   additionalPanel,
 }) {
   return (
     <div>
       <h2>This ticket is in CONFIGURATION state.</h2>
-      <div>
-        <h3>Leftover address</h3>
-        If there is too much Bitcoin, the surplus will be sent back to this
-        address:
-        <label>Leftover address</label>
-        <input
-          type="text"
-          placeholder="Your btc address"
-          value={localLeftoverAddress}
-          onChange={(event) => setLocalLeftoverAddress(event.target.value)}
-        />
-        <button onClick={() => setLeftoverAddress(localLeftoverAddress)}>
-          Set leftover address
-        </button>
-      </div>
+      {master && (
+        <div>
+          <h3>Amount</h3>
+          You created this ticket, as a ticket master you have to configure the
+          amount you want to receive:
+          <label>Amount in BTC</label>
+          <input
+            type="number"
+            placeholder="0.01"
+            value={localAmount}
+            onChange={(event) => setLocalAmount(event.target.value)}
+          />
+          <button onClick={() => setAmount(localAmount)}>Set amount</button>
+        </div>
+      )}
       {additionalPanel}
 
       <button onClick={null}>Send payment</button>

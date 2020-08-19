@@ -10,27 +10,31 @@ import {
   SharedDispute,
 } from "./shared";
 
-export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
+export default function ReceiverPanel({
+  requestsManager,
+  id,
+  infos,
+  setInfos,
+}) {
   const [localAmount, setLocalAmount] = useState(getAmount(null) / 10 ** 9);
-  const [localLeftoverAddress, setLocalLeftoverAddress] = useState(
-    getLeftoverAddress("bc1qm9g2k3fznl2a9vghnpnwem87p03txl4y5lahyu")
+  const [localReceiverAddress, setLocalReceiverAddress] = useState(
+    getReceiverAddress("")
   );
 
-  const getLeftoverOption = () => {
+  const getReceiverOption = () => {
     return (
       <div>
-        <h3>Leftover address</h3>
-        If there is too much Bitcoin, the surplus will be sent back to this
-        address:
-        <label>Leftover address</label>
+        <h3>Receiver address</h3>
+        Here is the address where you will receive the BTC sent by the spender.
+        <label>Receiver address</label>
         <input
           type="text"
           placeholder="Your btc address"
-          value={localLeftoverAddress}
-          onChange={(event) => setLocalLeftoverAddress(event.target.value)}
+          value={localReceiverAddress}
+          onChange={(event) => setLocalReceiverAddress(event.target.value)}
         />
-        <button onClick={() => setLeftoverAddress(localLeftoverAddress)}>
-          Set leftover address
+        <button onClick={() => setReceiverAddress(localReceiverAddress)}>
+          Set receiver address
         </button>
       </div>
     );
@@ -52,14 +56,14 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
       });
   };
 
-  function getLeftoverAddress(defaultValue) {
-    if (!("leftover" in infos)) return defaultValue;
-    return infos["leftover"];
+  function getReceiverAddress(defaultValue) {
+    if (!("receiver" in infos)) return defaultValue;
+    return infos["receiver"];
   }
 
-  const setLeftoverAddress = (address) => {
+  const setReceiverAddress = (address) => {
     requestsManager
-      .setLeftover(id, true, address)
+      .setReceiver(id, false, address)
       .then((response) => response.json())
       .then((response) => {
         if ("error" in response) console.log(response["error"]);
@@ -67,9 +71,9 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
       });
   };
 
-  function getReceiverAddress(defaultValue) {
-    if (!("receiver" in infos)) return defaultValue;
-    return infos["receiver"];
+  function getLeftoverAddress(defaultValue) {
+    if (!("leftover" in infos)) return defaultValue;
+    return infos["leftover"];
   }
 
   function handleStatus(status) {
@@ -81,7 +85,7 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
             localAmount={localAmount}
             setLocalAmount={setLocalAmount}
             setAmount={setAmount}
-            additionalPanel={getLeftoverOption()}
+            additionalPanel={getReceiverOption()}
           />
         );
 
@@ -104,16 +108,16 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
 
   return (
     <div class={style.panel}>
-      <h1>Spender Panel</h1>
+      <h1>Receiver Panel</h1>
       <ul>
         <li>BTC address: {id}</li>
         <li>
-          Amount to send: {getAmount() / 10 ** 9} BTC or {getAmount()} satoshis
+          Amount to receive: {getAmount() / 10 ** 9} BTC or {getAmount()} satoshis
         </li>
-        <li>Leftover Address: {getLeftoverAddress("you didn't set it")}</li>
         <li>
-          Receiver Address: {getReceiverAddress("the receiver didn't set it")}
+          Leftover Address: {getLeftoverAddress("the spender didn't set it")}
         </li>
+        <li>Receiver Address: {getReceiverAddress("you didn't set it")}</li>
       </ul>
       {handleStatus(infos["status"])}
     </div>
