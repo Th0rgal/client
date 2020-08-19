@@ -43,16 +43,6 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
     return amount ? amount : defaultValue;
   }
 
-  function getLeftOverAddress(defaultValue) {
-    if (!("leftover" in infos)) return defaultValue;
-    return infos["leftover"];
-  }
-
-  function getReceiverAddress(defaultValue) {
-    if (!("receiver" in infos)) return defaultValue;
-    return infos["receiver"];
-  }
-
   const setAmount = (amount) => {
     amount = Math.floor(parseFloat(amount) * 10 ** 9);
     requestsManager
@@ -64,6 +54,11 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
       });
   };
 
+  function getLeftOverAddress(defaultValue) {
+    if (!("leftover" in infos)) return defaultValue;
+    return infos["leftover"];
+  }
+
   const setLeftoverAddress = (address) => {
     requestsManager
       .setLeftover(id, true, address)
@@ -73,6 +68,11 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
         else setInfos(response);
       });
   };
+
+  function getReceiverAddress(defaultValue) {
+    if (!("receiver" in infos)) return defaultValue;
+    return infos["receiver"];
+  }
 
   return (
     <div class={style.panel}>
