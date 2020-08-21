@@ -80,7 +80,7 @@ export default function ReceiverPanel({
       case 0:
         return (
           <SharedConfig
-            sender={false}
+            spender={false}
             infos={infos}
             setInfos={setInfos}
             setAmount={setAmount}
@@ -91,7 +91,15 @@ export default function ReceiverPanel({
         );
 
       case 1:
-        return <SharedReception infos={infos} id={id} />;
+        return (
+          <SharedReception
+            infos={infos}
+            spender={false}
+            id={id}
+            requestsManager={requestsManager}
+            setInfos={setInfos}
+          />
+        );
 
       case 2:
         return <SharedReceived />;
@@ -115,7 +123,7 @@ export default function ReceiverPanel({
       <Refresh
         setInfos={setInfos}
         id={id}
-        sender={false}
+        spender={false}
         requestsManager={requestsManager}
       />
       <ul>

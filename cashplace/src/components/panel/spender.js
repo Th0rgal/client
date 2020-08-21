@@ -71,7 +71,7 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
       case 0:
         return (
           <SharedConfig
-            sender={true}
+            spender={true}
             infos={infos}
             setInfos={setInfos}
             setAmount={setAmount}
@@ -82,7 +82,15 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
         );
 
       case 1:
-        return <SharedReception infos={infos} id={id} />;
+        return (
+          <SharedReception
+            infos={infos}
+            spender={true}
+            id={id}
+            requestsManager={requestsManager}
+            setInfos={setInfos}
+          />
+        );
 
       case 2:
         return <SharedReceived />;
@@ -106,7 +114,7 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
       <Refresh
         setInfos={setInfos}
         id={id}
-        sender={true}
+        spender={true}
         requestsManager={requestsManager}
       />
       <ul>

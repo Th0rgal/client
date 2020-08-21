@@ -1,6 +1,15 @@
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 
-export function Refresh({ setInfos, id, sender, requestsManager }) {
+function refreshInfos(promise, setInfos) {
+  promise
+    .then((response) => response.json())
+    .then((response) => {
+      if ("error" in response) console.log(response["error"]);
+      else setInfos(response);
+    });
+}
+
+export function Refresh({ setInfos, id, spender, requestsManager }) {
   const [lastUsage, setLastUsage] = useState(0);
   const delay = 10 * 1e3;
 
@@ -11,20 +20,14 @@ export function Refresh({ setInfos, id, sender, requestsManager }) {
       return;
     }
     setLastUsage(Date.now());
-    requestsManager
-      .fetchTicketInfos(id, sender)
-      .then((response) => response.json())
-      .then((response) => {
-        if ("error" in response) console.log(response["error"]);
-        else setInfos(response);
-      });
+    refreshInfos(requestsManager.fetchTicketInfos(id, spender), setInfos);
   }
 
   return <button onClick={refresh}>Refresh</button>;
 }
 
 export function SharedConfig({
-  sender,
+  spender,
   infos,
   setInfos,
   setAmount,
@@ -43,13 +46,7 @@ export function SharedConfig({
       return;
     }
     setLastUsage(Date.now());
-    requestsManager
-      .askPayment(id, sender)
-      .then((response) => response.json())
-      .then((response) => {
-        if ("error" in response) console.log(response["error"]);
-        else setInfos(response);
-      });
+    refreshInfos(requestsManager.askPayment(id, spender), setInfos);
   }
 
   return (
@@ -77,18 +74,71 @@ export function SharedConfig({
         </div>
       )}
       {additionalPanel}
-      <button onClick={askPayment}>Send payment</button>
+      {spender ? (
+        <button onClick={askPayment}>Send payment</button>
+      ) : (
+        <button onClick={askPayment}>Ask for payment</button>
+      )}
     </div>
   );
 }
 
-export function SharedReception({ infos, id }) {
+export function SharedReception({
+  infos,
+  spender,
+  id,
+  requestsManager,
+  setInfos,
+}) {
+  const [cachedBalance, setCachedBalance] = useState(0);
+  const [lastUsage, setLastUsage] = useState(0);
+  const delay = 10 * 1e3;
+
+  function queryBlockchain(spender, id, requestsManager, setInfos) {
+    const realDelay = Date.now() - lastUsage;
+    if (delay > realDelay) {
+      console.log(`please wait ${10 - realDelay / 1000} more seconds`);
+      return;
+    }
+    setLastUsage(Date.now());
+    requestsManager
+      .getBalance(id, spender)
+      .then((response) => response.json())
+      .then((response) => {
+        if ("error" in response) console.log(response["error"]);
+        else {
+          setCachedBalance(response["balance"]);
+          refreshInfos(requestsManager.fetchTicketInfos(id, spender), setInfos);
+        }
+      });
+  }
+
+  useEffect(() => {
+    queryBlockchain(spender, id, requestsManager, setInfos);
+  }, [spender, id, requestsManager, setInfos]);
+
   return (
     <div>
       <h2>This ticket is in RECEPTION state.</h2>
       <div>
-        <h3>Transaction address</h3>
-        You need to send at least {infos["amount"]} BTC to the address: {id}
+        <h3>Bitcoin transaction</h3>A minimum of {infos["amount"] / 1e8}{" "}
+        bitcoins must be sent. A portion may be paid by the receiver to
+        discourage him from wasting time of the spender. If more bitcoins are
+        received than necessary, the surplus will be returned to the leftover
+        address and the receiver address will receive exactly the right amount
+        (amount - 1%), otherwise the receiver will pay the transaction fees.
+        <h4>Currently received:</h4>
+        {cachedBalance / 1e8} ₿ ({cachedBalance} satoshis)
+        <button
+          onClick={() =>
+            queryBlockchain(spender, id, requestsManager, setInfos)
+          }
+        >
+          Query blockchain
+        </button>
+        <h4>Address to send the bitcoins:</h4>
+        {id}
+        <h4>qrcode to send the bitcoins:</h4>
         <img
           src={`https://www.bitcoinqrcodemaker.com/api/?style=bitcoin&address=${id}`}
           alt="qrcode"
