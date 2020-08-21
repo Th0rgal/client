@@ -76,27 +76,20 @@ export default function ReceiverPanel({
     return infos["leftover"];
   }
 
-  function askPayment() {
-    requestsManager
-      .askPayment(id, false)
-      .then((response) => response.json())
-      .then((response) => {
-        if ("error" in response) console.log(response["error"]);
-        else setInfos(response);
-      });
-  }
-
   function handleStatus(status) {
     switch (status) {
       case 0:
         return (
           <SharedConfig
+            sender={false}
             master={infos["master"]}
             localAmount={localAmount}
             setLocalAmount={setLocalAmount}
             setAmount={setAmount}
+            setInfos={setInfos}
             additionalPanel={getReceiverOption()}
-            askPayment={askPayment}
+            requestsManager={requestsManager}
+            id={id}
           />
         );
 

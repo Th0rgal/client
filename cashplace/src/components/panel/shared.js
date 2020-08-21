@@ -1,11 +1,35 @@
+import { useState } from "preact/hooks";
+
 export function SharedConfig({
+  sender,
   master,
   localAmount,
   setLocalAmount,
   setAmount,
+  setInfos,
   additionalPanel,
-  askPayment,
+  requestsManager,
+  id,
 }) {
+  const [lastUsage, setLastUsage] = useState(0);
+  const delay = 10 * 1e3;
+
+  function askPayment() {
+    const realDelay = Date.now() - lastUsage;
+    if (delay > realDelay) {
+      console.log(`please wait ${10 - realDelay / 1000} more seconds`);
+      return;
+    }
+    setLastUsage(Date.now());
+    requestsManager
+      .askPayment(id, sender)
+      .then((response) => response.json())
+      .then((response) => {
+        if ("error" in response) console.log(response["error"]);
+        else setInfos(response);
+      });
+  }
+
   return (
     <div>
       <h2>This ticket is in CONFIGURATION state.</h2>
@@ -30,7 +54,7 @@ export function SharedConfig({
   );
 }
 
-export function SharedReception({infos, id}) {
+export function SharedReception({ infos, id }) {
   return (
     <div>
       <h2>This ticket is in RECEPTION state.</h2>
