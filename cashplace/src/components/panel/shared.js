@@ -1,16 +1,39 @@
 import { useState } from "preact/hooks";
 
+export function Refresh({ setInfos, id, sender, requestsManager }) {
+  const [lastUsage, setLastUsage] = useState(0);
+  const delay = 10 * 1e3;
+
+  function refresh() {
+    const realDelay = Date.now() - lastUsage;
+    if (delay > realDelay) {
+      console.log(`please wait ${10 - realDelay / 1000} more seconds`);
+      return;
+    }
+    setLastUsage(Date.now());
+    requestsManager
+      .fetchTicketInfos(id, sender)
+      .then((response) => response.json())
+      .then((response) => {
+        if ("error" in response) console.log(response["error"]);
+        else setInfos(response);
+      });
+  }
+
+  return <button onClick={refresh}>Refresh</button>;
+}
+
 export function SharedConfig({
   sender,
-  master,
-  localAmount,
-  setLocalAmount,
-  setAmount,
+  infos,
   setInfos,
+  setAmount,
   additionalPanel,
   requestsManager,
   id,
 }) {
+  console.log(infos)
+  const [cachedAmount, setCachedAmount] = useState(infos["amount"]);
   const [lastUsage, setLastUsage] = useState(0);
   const delay = 10 * 1e3;
 
@@ -33,7 +56,7 @@ export function SharedConfig({
   return (
     <div>
       <h2>This ticket is in CONFIGURATION state.</h2>
-      {master && (
+      {infos["master"] && (
         <div>
           <h3>Amount</h3>
           You created this ticket, as a ticket master you have to configure the
@@ -42,10 +65,16 @@ export function SharedConfig({
           <input
             type="number"
             placeholder="0.01"
-            value={localAmount}
-            onChange={(event) => setLocalAmount(event.target.value)}
+            value={infos["amount"] / 1e8}
+            onChange={(event) => setCachedAmount(event.target.value)}
           />
-          <button onClick={() => setAmount(localAmount)}>Set amount</button>
+          <button
+            onClick={() =>
+              setAmount(Math.floor(parseFloat(cachedAmount) * 1e8))
+            }
+          >
+            Set amount
+          </button>
         </div>
       )}
       {additionalPanel}

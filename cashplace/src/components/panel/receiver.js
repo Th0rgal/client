@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import style from "./style";
 
 import {
+  Refresh,
   SharedConfig,
   SharedReception,
   SharedReceived,
@@ -16,7 +17,6 @@ export default function ReceiverPanel({
   infos,
   setInfos,
 }) {
-  const [localAmount, setLocalAmount] = useState(getAmount(null) / 10 ** 9);
   const [localReceiverAddress, setLocalReceiverAddress] = useState(
     getReceiverAddress("")
   );
@@ -46,7 +46,6 @@ export default function ReceiverPanel({
   }
 
   const setAmount = (amount) => {
-    amount = Math.floor(parseFloat(amount) * 10 ** 9);
     requestsManager
       .setAmount(id, false, amount)
       .then((response) => response.json())
@@ -82,11 +81,9 @@ export default function ReceiverPanel({
         return (
           <SharedConfig
             sender={false}
-            master={infos["master"]}
-            localAmount={localAmount}
-            setLocalAmount={setLocalAmount}
-            setAmount={setAmount}
+            infos={infos}
             setInfos={setInfos}
+            setAmount={setAmount}
             additionalPanel={getReceiverOption()}
             requestsManager={requestsManager}
             id={id}
@@ -110,14 +107,21 @@ export default function ReceiverPanel({
     }
   }
 
+  const amount = infos["amount"] ? infos["amount"] : 0;
+
   return (
     <div class={style.panel}>
       <h1>Receiver Panel</h1>
+      <Refresh
+        setInfos={setInfos}
+        id={id}
+        sender={false}
+        requestsManager={requestsManager}
+      />
       <ul>
         <li>BTC address: {id}</li>
         <li>
-          Amount to receive: {getAmount() / 10 ** 9} BTC or {getAmount()}{" "}
-          satoshis
+          Amount to send: {amount / 1e8} ({amount} satoshis)
         </li>
         <li>
           Leftover Address: {getLeftoverAddress("the spender didn't set it")}

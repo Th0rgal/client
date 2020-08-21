@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import style from "./style";
 
 import {
+  Refresh,
   SharedConfig,
   SharedReception,
   SharedReceived,
@@ -11,7 +12,6 @@ import {
 } from "./shared";
 
 export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
-  const [localAmount, setLocalAmount] = useState(getAmount(null) / 10 ** 9);
   const [localLeftoverAddress, setLocalLeftoverAddress] = useState(
     getLeftoverAddress("bc1qm9g2k3fznl2a9vghnpnwem87p03txl4y5lahyu")
   );
@@ -36,13 +36,7 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
     );
   };
 
-  function getAmount(defaultValue) {
-    const amount = infos["amount"];
-    return amount ? amount : defaultValue;
-  }
-
   const setAmount = (amount) => {
-    amount = Math.floor(parseFloat(amount) * 10 ** 9);
     requestsManager
       .setAmount(id, true, amount)
       .then((response) => response.json())
@@ -78,11 +72,9 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
         return (
           <SharedConfig
             sender={true}
-            master={infos["master"]}
-            localAmount={localAmount}
-            setLocalAmount={setLocalAmount}
-            setAmount={setAmount}
+            infos={infos}
             setInfos={setInfos}
+            setAmount={setAmount}
             additionalPanel={getLeftoverOption()}
             requestsManager={requestsManager}
             id={id}
@@ -106,13 +98,21 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
     }
   }
 
+  const amount = infos["amount"] ? infos["amount"] : 0;
+
   return (
     <div class={style.panel}>
       <h1>Spender Panel</h1>
+      <Refresh
+        setInfos={setInfos}
+        id={id}
+        sender={true}
+        requestsManager={requestsManager}
+      />
       <ul>
         <li>BTC address: {id}</li>
         <li>
-          Amount to send: {getAmount() / 10 ** 9} BTC or {getAmount()} satoshis
+          Amount to send: {amount / 1e8} ({amount} satoshis)
         </li>
         <li>Leftover Address: {getLeftoverAddress("you didn't set it")}</li>
         <li>
