@@ -112,7 +112,7 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
       <ul>
         <li>BTC address: {id}</li>
         <li>
-          Amount to send: {amount / 1e8} ({amount} satoshis)
+          Amount to send: {amount / 1e8} ₿ ({amount} satoshis)
         </li>
         <li>Leftover Address: {getLeftoverAddress("you didn't set it")}</li>
         <li>

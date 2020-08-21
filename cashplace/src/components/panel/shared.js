@@ -32,7 +32,6 @@ export function SharedConfig({
   requestsManager,
   id,
 }) {
-  console.log(infos)
   const [cachedAmount, setCachedAmount] = useState(infos["amount"]);
   const [lastUsage, setLastUsage] = useState(0);
   const delay = 10 * 1e3;
