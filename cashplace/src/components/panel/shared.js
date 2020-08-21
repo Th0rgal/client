@@ -30,7 +30,7 @@ export function SharedConfig({
   );
 }
 
-export function SharedReception(infos, id) {
+export function SharedReception({infos, id}) {
   return (
     <div>
       <h2>This ticket is in RECEPTION state.</h2>
