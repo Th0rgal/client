@@ -57,7 +57,7 @@ export default class RequestsManager {
 
   confirmReception(id, spender, fast) {
     return this.sendRequest(
-      `/ticket/${id}/balance`,
+      `/ticket/${id}/confirm`,
       { spender: spender, fast: fast },
       "GET"
     );

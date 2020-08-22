@@ -2,10 +2,10 @@ import { useState } from "preact/hooks";
 import style from "./style";
 
 import {
+  refreshInfos,
   Refresh,
   SharedConfig,
   SharedReception,
-  SharedReceived,
   SharedSending,
   SharedSent,
   SharedDispute,
@@ -93,7 +93,14 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
         );
 
       case 2:
-        return <SharedReceived />;
+        return (
+          <Received
+            spender={true}
+            id={id}
+            requestsManager={requestsManager}
+            setInfos={setInfos}
+          />
+        );
 
       case 3:
         return <SharedSending />;
@@ -128,6 +135,49 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
         </li>
       </ul>
       {handleStatus(infos["status"])}
+    </div>
+  );
+}
+
+function Received({ spender, id, requestsManager, setInfos }) {
+  const [lastUsage, setLastUsage] = useState(0);
+  const delay = 10 * 1e3;
+
+  function confirmReception(spender, id, requestsManager, setInfos, fast) {
+    const realDelay = Date.now() - lastUsage;
+    if (delay > realDelay) {
+      console.log(`please wait ${10 - realDelay / 1000} more seconds`);
+      return;
+    }
+    setLastUsage(Date.now());
+    refreshInfos(requestsManager.confirmReception(id, spender, fast), setInfos);
+  }
+
+  return (
+    <div>
+      <h2>This ticket is in RECEIVED state.</h2>
+      <div>
+        <h3>Your bitcoins have been received</h3>
+        Please confirm here once you've received what you paid for. If there is
+        an issue, click on "there is an issue" button to open a dispute.
+        <h4>Confirm the reception of what I paid for</h4>
+        <button
+          onClick={() => {
+            confirmReception(spender, id, requestsManager, setInfos, true);
+          }}
+        >
+          Fast payment (the receiver will receive a bit less)
+        </button>
+        <button
+          onClick={() => {
+            confirmReception(spender, id, requestsManager, setInfos, false);
+          }}
+        >
+          Slow payment
+        </button>
+        <h4>Report a problem to a human</h4>
+        <button onClick={null}>Open a dispute</button>
+      </div>
     </div>
   );
 }

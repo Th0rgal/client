@@ -1,9 +1,10 @@
 import { useState, useEffect } from "preact/hooks";
 
-function refreshInfos(promise, setInfos) {
+export function refreshInfos(promise, setInfos) {
   promise
     .then((response) => response.json())
     .then((response) => {
+      console.log(response);
       if ("error" in response) console.log(response["error"]);
       else setInfos(response);
     });
@@ -143,21 +144,6 @@ export function SharedReception({
           src={`https://www.bitcoinqrcodemaker.com/api/?style=bitcoin&address=${id}`}
           alt="qrcode"
         />
-      </div>
-    </div>
-  );
-}
-
-export function SharedReceived() {
-  return (
-    <div>
-      <h2>This ticket is in RECEIVED state.</h2>
-      <div>
-        <h3>Your bitcoins have been received</h3>
-        Please confirm here once you've received what you paid for. If there is
-        an issue, click on "there is an issue" button to open a dispute.
-        <button onClick={null}>Confirm the reception of what I paid for</button>
-        <button onClick={null}>Open an issue</button>
       </div>
     </div>
   );

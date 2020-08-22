@@ -5,7 +5,6 @@ import {
   Refresh,
   SharedConfig,
   SharedReception,
-  SharedReceived,
   SharedSending,
   SharedSent,
   SharedDispute,
@@ -102,7 +101,7 @@ export default function ReceiverPanel({
         );
 
       case 2:
-        return <SharedReceived />;
+        return null;
 
       case 3:
         return <SharedSending />;
