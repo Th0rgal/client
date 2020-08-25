@@ -109,6 +109,7 @@ export function SharedReception({
         if ("error" in response) console.log(response["error"]);
         else {
           setCachedBalance(response["balance"]);
+          console.log("test");
           refreshInfos(requestsManager.fetchTicketInfos(id, spender), setInfos);
         }
       });
@@ -149,7 +150,7 @@ export function SharedReception({
   );
 }
 
-export function SharedSending() {
+export function SharedSending({ id }) {
   return (
     <div>
       <h2>This ticket is in SENDING state.</h2>
@@ -178,13 +179,16 @@ export function SharedSent() {
   );
 }
 
-export function SharedDispute() {
+export function SharedDispute({ code }) {
   return (
     <div>
       <h2>This ticket is in DISPUTE state.</h2>
       <div>
         <h3>Contact us to fix the problem</h3>
-        You have reported a problem, please contact us on matrix to solve it.
+        You have reported a problem, please contact{" "}
+        <a href="https://www.mc-market.org/members/83678/">Uxon</a> on mc-market
+        to solve it. This is your private code you'll have to give to a
+        moderator as a proof: {code}
       </div>
     </div>
   );

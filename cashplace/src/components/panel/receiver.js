@@ -39,11 +39,6 @@ export default function ReceiverPanel({
     );
   };
 
-  function getAmount(defaultValue) {
-    const amount = infos["amount"];
-    return amount ? amount : defaultValue;
-  }
-
   const setAmount = (amount) => {
     requestsManager
       .setAmount(id, false, amount)
@@ -101,16 +96,24 @@ export default function ReceiverPanel({
         );
 
       case 2:
-        return null;
+        return (
+          <div>
+            <h2>This ticket is in RECEIVED state.</h2>
+            <h3>Your bitcoin payment have been received</h3>
+            To transfer the funds to your own address, please send the
+            counterparty to the spender and ask him to confirm the reception
+            once it is done.
+          </div>
+        );
 
       case 3:
-        return <SharedSending />;
+        return <SharedSending id={id} />;
 
       case 4:
         return <SharedSent />;
 
       case 5:
-        return <SharedDispute />;
+        return <SharedDispute code={infos["code"]} />;
     }
   }
 

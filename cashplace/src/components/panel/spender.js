@@ -103,13 +103,13 @@ export default function SpenderPanel({ requestsManager, id, infos, setInfos }) {
         );
 
       case 3:
-        return <SharedSending />;
+        return <SharedSending id={id} />;
 
       case 4:
         return <SharedSent />;
 
       case 5:
-        return <SharedDispute />;
+        return <SharedDispute code={infos["code"]} />;
     }
   }
 
@@ -153,6 +153,16 @@ function Received({ spender, id, requestsManager, setInfos }) {
     refreshInfos(requestsManager.confirmReception(id, spender, fast), setInfos);
   }
 
+  function openDispute(spender, id, requestsManager, setInfos) {
+    const realDelay = Date.now() - lastUsage;
+    if (delay > realDelay) {
+      console.log(`please wait ${10 - realDelay / 1000} more seconds`);
+      return;
+    }
+    setLastUsage(Date.now());
+    refreshInfos(requestsManager.openDispute(id, spender), setInfos);
+  }
+
   return (
     <div>
       <h2>This ticket is in RECEIVED state.</h2>
@@ -176,7 +186,13 @@ function Received({ spender, id, requestsManager, setInfos }) {
           Slow payment
         </button>
         <h4>Report a problem to a human</h4>
-        <button onClick={null}>Open a dispute</button>
+        <button
+          onClick={() => {
+            openDispute(spender, id, requestsManager, setInfos);
+          }}
+        >
+          Open a dispute
+        </button>
       </div>
     </div>
   );

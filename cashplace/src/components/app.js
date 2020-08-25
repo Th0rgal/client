@@ -15,7 +15,7 @@ export default class App extends Component {
 
   componentDidMount() {
     this.setState({
-      requestsManager: new RequestsManager("http://localhost:8081"),
+      requestsManager: new RequestsManager("https://test.alpha.cash.place"),
     });
   }
 

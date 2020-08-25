@@ -59,7 +59,15 @@ export default class RequestsManager {
     return this.sendRequest(
       `/ticket/${id}/confirm`,
       { spender: spender, fast: fast },
-      "GET"
+      "POST"
+    );
+  }
+
+  openDispute(id, spender) {
+    return this.sendRequest(
+      `/ticket/${id}/opendispute`,
+      { spender: spender },
+      "POST"
     );
   }
 

@@ -20,7 +20,7 @@ export default function Ticket({ requestsManager, id }) {
       .then((response) => response.json())
       .then((json) => {
         if ("error" in json) {
-          //todo: handle error!
+          console.log(json["error"]);
         } else setInfos(json);
       });
   };
