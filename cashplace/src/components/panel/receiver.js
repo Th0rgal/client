@@ -136,7 +136,10 @@ export default function ReceiverPanel({
         <li>
           Leftover Address: {getLeftoverAddress("the spender didn't set it")}
         </li>
-        <li>(final) Receiver Address (don't send your bitcoins here): {getReceiverAddress("you didn't set it")}</li>
+        <li>
+          (final) Receiver Address (don't send your bitcoins here):{" "}
+          {getReceiverAddress("you didn't set it")}
+        </li>
       </ul>
       {handleStatus(infos["status"])}
     </div>
